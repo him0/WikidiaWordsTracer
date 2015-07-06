@@ -50,7 +50,7 @@ if __name__ == "__main__":
                 if node.isPickuped is False:
                     minCostNode = node
             else:
-                if (node.getCost < minCostNode.getCost()) and (
+                if (node.getCost < minCostNode.getCost) and (
                             node.isPickuped is False):
                     minCostNode = node
 
