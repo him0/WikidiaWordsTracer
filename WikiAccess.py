@@ -41,8 +41,12 @@ class WikiAccess:
             words = json.loads(wordsJson)
 
         else:
-            with urllib.request.urlopen(self.url) as response:
-                xmlStrings = response.read().decode("utf-8")
+            try:
+                with urllib.request.urlopen(self.url) as response:
+                    xmlStrings = response.read().decode("utf-8")
+            except urllib.error.HTTPError:
+                print(self.word)
+                
 
             self.soup = bs4.BeautifulSoup(xmlStrings)
             self.contents = self.soup.findAll("text")
