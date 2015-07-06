@@ -6,9 +6,9 @@ from Node import *
 
 if __name__=="__main__":
     
-    print("-------------------")
-    print("  WikipediaTracer  ")
-    print("-------------------")
+    print("----------------------")
+    print("  WikidiaWordsTracer  ")
+    print("----------------------")
     
     
     startWord = input("スタート地点となる ワード >> ")
