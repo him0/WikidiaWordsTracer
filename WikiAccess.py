@@ -58,6 +58,12 @@ class WikiAccess:
                 for match in matchs:
                     word = xml.sax.saxutils.unescape(match)
                     word = xml.sax.saxutils.unescape(word)#表記が文字列参照の文字列参照なので2回やらないとダメ
+                    word = word.replace("km&sup2", "平方キロメートル")
+                    word = word.replace("m&sup2", "平方メートル")
+                    word = word.replace("mi&sup2", "平方マイル")
+                    word = word.replace("}}", "") ##謎 {{IPA 対策
+                    word = word.replace("<br_/>", "") ##謎 ナノアーケウム<br_/>・エクインタンス 対策
+                    
                     word = word.replace(" ", "_")
                     if "|" in word:
                         words.extend(word.split("|")) #wikiのエイリアス表記に対応
