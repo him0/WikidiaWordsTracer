@@ -70,8 +70,13 @@ class WikiAccess:
                         words.extend(word.split("|")) #wikiのエイリアス表記に対応
                     else:
                         words.append(word)
-            words = list(set(words)) #重複消去
 
+            #words = list(set(words)) #重複消去 # Bug 順番が入れ替わる
+            uniqueWords = []
+            for x in words:
+                if x not in uniqueWords:
+                    uniqueWords.append(x)
+            words = uniqueWords
             with open(self.cachePath + "/" + fileName, "w") as content:
                 content.write(json.dumps(words))
 
