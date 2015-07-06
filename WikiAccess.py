@@ -53,24 +53,31 @@ class WikiAccess:
             for content in self.contents :
                 matchs = pattern.findall(str(content))
                 for match in matchs:
-                    #表記が文字列参照の文字列参照なので2回やらないとダメ
+                    # 表記が文字列参照の文字列参照なので2回やらないとダメ
                     word = xml.sax.saxutils.unescape(match)
                     word = xml.sax.saxutils.unescape(word)
 
                     word = word.replace("km&sup2", "平方キロメートル")
                     word = word.replace("m&sup2", "平方メートル")
                     word = word.replace("mi&sup2", "平方マイル")
-                    word = word.replace("}}", "") ##謎 }}lang 対策
-                    word = word.replace("{{", "") ##謎 {{IPA 対策
-                    word = word.replace("<br_/>", "") ##謎 ナノアーケウム<br_/>・エクインタンス 対策
-                    word = word.replace("<sub>6</sub>", "") ##謎 ビタミンB<sub>6</sub> 対策
+                    word = word.replace("}}", "") # 謎 }}lang 対策
+                    word = word.replace("{{", "") # 謎 {{IPA 対策
+                    # 謎 ナノアーケウム<br_/>・エクインタンス 対策
+                    word = word.replace("<br_/>", "")
+                    # 謎 ビタミンB<sub>6</sub> 対策
+                    word = word.replace("<sub>6</sub>", "")
                     word = word.replace(" ", "_")
 
                     if "|" in word:
                         words.extend(word.split("|")) #wikiのエイリアス表記に対応
                     else:
                         words.append(word)
-            words = list(set(words)) #重複消去
+            #words = list(set(words)) #重複消去 # Bug 順番が入れ替わる
+            uniqueWords = []
+            for x in words:
+                if x not in uniqueWords:
+                    uniqueWords.append(x)
+            words = uniqueWords
 
             with open(self.cachePath + "/" + fileName, "w") as content:
                 content.write(json.dumps(words))
