@@ -63,7 +63,7 @@ class Node(object):
             cost = 0
         else:
             cost = self.__preNode.getCost + \
-                   list(self.__preNode.nodes).index(self) + 1
+                   list(self.__preNode.reachableWords).index(self.word) + 1
         return (cost)
 
     def getWordsChane(self, chaneString=""):
