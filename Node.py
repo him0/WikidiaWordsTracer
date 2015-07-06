@@ -24,7 +24,7 @@ class Node(object):
         numOfWords = len(self.reachableWords)
 
         if numOfWords != 0 and showMessage:
-            # progressBar = ProgressBar(numOfWords) #作ってみたものの微妙な感じ
+            # progressBar = ProgressBar(numOfWords) # 作ってみたものの微妙な感じ
             print(self.word + " から参照されるノードの数 " + str(numOfWords))
 
         for word in self.reachableWords:
@@ -55,7 +55,7 @@ class Node(object):
             if node.word == word:
                 return (node)
 
-        return (None)
+        return None
 
     @property
     def getCost(self):
@@ -64,7 +64,7 @@ class Node(object):
         else:
             cost = self.__preNode.getCost + \
                    list(self.__preNode.reachableWords).index(self.word) + 1
-        return (cost)
+        return cost
 
     def getWordsChane(self, chaneString=""):
         if self.__preNode is None:
@@ -79,7 +79,7 @@ class Node(object):
         else:
             list = self.__preNode.getWordsChaneList()
             list += [self.word]
-            return (list)
+            return list
 
 
 if __name__ == "__main__":
