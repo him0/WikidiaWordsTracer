@@ -37,7 +37,16 @@ if __name__ == "__main__":
 
         print("確定 : " + minCostNode.word + " (距離 : " + str(
             minCostNode.getCost) + ")")
-        nodes.extend(minCostNode.getNodes(showMessage=True))
+
+        additionalNodes = minCostNode.getNodes(showMessage=True)
+        for additionalNode in additionalNodes:
+            for node in nodes:
+                if additionalNode.word == node.word:
+                    if additionalNode.getCost < node.getCost:
+                        nodes.remove(node)
+                    else:
+                        additionalNodes.remove(additionalNode)
+        nodes += additionalNodes
 
         if minCostNode.searchNode(goalWord) is not None:
             print("ゴール 発見")
