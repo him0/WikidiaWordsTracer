@@ -32,7 +32,7 @@ class WikiAccess:
 
     def getReachableWords(self):
         words = []
-        fileName = self.keyword[0:50]#長すぎる文字列対策
+        fileName = self.keyword[0:50] #長すぎる文字列対策
         if fileName in os.listdir(self.cachePath):
             with open(self.cachePath + "/" + fileName, "r") as content:
                 wordsJson = content.read()
