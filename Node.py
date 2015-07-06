@@ -7,16 +7,16 @@ import threading
 import queue
 import time
 
+
 class Node(object):
-    
     def __init__(self, word, preNode=None):
         self.word = word
         self.__preNode = preNode
-        
+
         wikiAccess = WikiAccess(word)
         self.reachableWords = wikiAccess.getReachableWords()
         self.isPickuped = False
-        
+
         self.__threads = queue.Queue()
 
     def getNodes(self, showMessage=False):
@@ -30,10 +30,10 @@ class Node(object):
         for word in self.reachableWords:
             thread = threading.Thread(target=self.makeNode, args=(word,))
             self.__threads.put(thread)
-        
+
         startedThreadCount = 0
         numOfParallelThread = 50
-        
+
         while not self.__threads.empty():
             for x in range(0, numOfParallelThread):
                 if self.__threads.empty():
@@ -45,45 +45,47 @@ class Node(object):
             while startedThreadCount != len(self.nodes):
                 time.sleep(1)
 
-        return(self.nodes)
+        return (self.nodes)
 
-    def makeNode(self,word):
+    def makeNode(self, word):
         self.nodes += [Node(word, self)]
 
     def searchNode(self, word):
         for node in self.nodes:
             if node.word == word:
-                return(node)
+                return (node)
 
-        return(None)
+        return (None)
 
+    @property
     def getCost(self):
         if self.__preNode is None:
             cost = 0
         else:
-            cost = self.__preNode.getCost() +\
+            cost = self.__preNode.getCost + \
                    list(self.__preNode.nodes).index(self) + 1
-        return(cost)
+        return (cost)
 
     def getWordsChane(self, chaneString=""):
         if self.__preNode is None:
-            print (self.word + chaneString)
+            print(self.word + chaneString)
         else:
             nextChaneString = " -> " + self.word + chaneString
             self.__preNode.getWordsChane(nextChaneString)
 
     def getWordsChaneList(self):
         if self.__preNode is None:
-            return([self.word])
+            return ([self.word])
         else:
             list = self.__preNode.getWordsChaneList()
             list += [self.word]
-            return(list)
+            return (list)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     word = input(">>")
     n = Node(word)
     print(n.reachableWords)
     nodes = n.getNodes()
-    print(nodes[0].getCost())
+    print(nodes[0].getCost)
     print(nodes[0].getWordsChane())

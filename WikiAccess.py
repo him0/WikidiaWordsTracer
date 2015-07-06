@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import json
-
 import urllib.request
 import urllib.parse
 import bs4
 import re
 import xml.sax.saxutils
 import os
+
 
 class WikiAccess:
 

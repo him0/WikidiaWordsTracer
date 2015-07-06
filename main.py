@@ -4,10 +4,10 @@
 from WikiAccess import *
 from Node import *
 
-if __name__=="__main__":
-    
+if __name__ == "__main__":
+
     print("----------------------")
-    print("  WikidiaWordsTracer  ")
+    print("  WikipediaWordsTracer  ")
     print("----------------------")
 
     startWord = input("スタート地点となる ワード >> ")
@@ -18,8 +18,9 @@ if __name__=="__main__":
     print("スタート地点を" + startWord + "に")
     print("ゴール地点を" + goalWord + "に設定しました。")
     print("探索を開始します。")
-    
+
     nodes = []
+    pickedupedWords = []
     startNode = Node(startWord)
     nodes.append(startNode)
 
@@ -29,11 +30,13 @@ if __name__=="__main__":
         print("現在の総ノード数 : " + str(len(nodes)))
 
         # todo 同じwordについてのノード2回めに作成された際の処理
+        pickedupedWords.append(minCostNode.word)
         minCostNode.isPickuped = True
-        #for node in nodes:
+        # for node in nodes:
         #    print("ノード : " + node.word + " (距離 : " + str(node.getCost()) + ")")
 
-        print("確定 : " + minCostNode.word + " (距離 : " + str(minCostNode.getCost()) + ")")
+        print("確定 : " + minCostNode.word + " (距離 : " + str(
+            minCostNode.getCost) + ")")
         nodes.extend(minCostNode.getNodes(showMessage=True))
 
         if minCostNode.searchNode(goalWord) is not None:
@@ -47,9 +50,10 @@ if __name__=="__main__":
                 if node.isPickuped is False:
                     minCostNode = node
             else:
-                if (node.getCost() < minCostNode.getCost()) and (node.isPickuped is False):
+                if (node.getCost < minCostNode.getCost()) and (
+                            node.isPickuped is False):
                     minCostNode = node
 
     if x == 100:
         print("探索を諦めました")
-    print("探索を終了しました")
+    print("探索を了しました")
