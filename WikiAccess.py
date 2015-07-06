@@ -19,9 +19,7 @@ class WikiAccess:
             self.word = None #なんか処理する
         else:
             self.word = word.replace(" ", "_")
-        #wiki独特の記法に対応する処理
-        #word = word.split("|")[0]
-        
+
         speclial = urllib.parse.quote_plus("特別:データ書き出し")
         self.keyword = urllib.parse.quote_plus(self.word)
         
