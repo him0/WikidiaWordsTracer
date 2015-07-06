@@ -9,8 +9,7 @@ if __name__=="__main__":
     print("----------------------")
     print("  WikidiaWordsTracer  ")
     print("----------------------")
-    
-    
+
     startWord = input("スタート地点となる ワード >> ")
     startWord = startWord.replace(" ", "_")
     goalWord = input("ゴール地点となる ワード >> ")
@@ -27,10 +26,13 @@ if __name__=="__main__":
     minCostNode = startNode
     for x in range(0, 100):
         print("最短経路確定済み ノード数 : " + str(x))
-
         print("現在の総ノード数 : " + str(len(nodes)))
 
+        # todo 同じwordについてのノード2回めに作成された際の処理
         minCostNode.isPickuped = True
+        #for node in nodes:
+        #    print("ノード : " + node.word + " (距離 : " + str(node.getCost()) + ")")
+
         print("確定 : " + minCostNode.word + " (距離 : " + str(minCostNode.getCost()) + ")")
         nodes.extend(minCostNode.getNodes(showMessage=True))
 

@@ -19,7 +19,6 @@ class WikiAccess:
             self.word = None #なんか処理する
         else:
             self.word = word.replace(" ", "_")
-        
         #wiki独特の記法に対応する処理
         #word = word.split("|")[0]
         
@@ -39,14 +38,12 @@ class WikiAccess:
                 wordsJson = content.read()
 
             words = json.loads(wordsJson)
-
         else:
             try:
                 with urllib.request.urlopen(self.url) as response:
                     xmlStrings = response.read().decode("utf-8")
             except urllib.error.HTTPError:
                 print(self.word)
-                
 
             self.soup = bs4.BeautifulSoup(xmlStrings)
             self.contents = self.soup.findAll("text")
@@ -56,15 +53,19 @@ class WikiAccess:
             for content in self.contents :
                 matchs = pattern.findall(str(content))
                 for match in matchs:
+                    #表記が文字列参照の文字列参照なので2回やらないとダメ
                     word = xml.sax.saxutils.unescape(match)
-                    word = xml.sax.saxutils.unescape(word)#表記が文字列参照の文字列参照なので2回やらないとダメ
+                    word = xml.sax.saxutils.unescape(word)
+
                     word = word.replace("km&sup2", "平方キロメートル")
                     word = word.replace("m&sup2", "平方メートル")
                     word = word.replace("mi&sup2", "平方マイル")
-                    word = word.replace("}}", "") ##謎 {{IPA 対策
+                    word = word.replace("}}", "") ##謎 }}lang 対策
+                    word = word.replace("{{", "") ##謎 {{IPA 対策
                     word = word.replace("<br_/>", "") ##謎 ナノアーケウム<br_/>・エクインタンス 対策
-                    
+                    word = word.replace("<sub>6</sub>", "") ##謎 ビタミンB<sub>6</sub> 対策
                     word = word.replace(" ", "_")
+
                     if "|" in word:
                         words.extend(word.split("|")) #wikiのエイリアス表記に対応
                     else:

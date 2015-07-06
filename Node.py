@@ -24,7 +24,7 @@ class Node(object):
         numOfWords = len(self.reachableWords)
 
         if numOfWords != 0 and showMessage:
-            #progressBar = ProgressBar(numOfWords) #作ってみたものの微妙な感じ
+            # progressBar = ProgressBar(numOfWords) #作ってみたものの微妙な感じ
             print(self.word + " から参照されるノードの数 " + str(numOfWords))
 
         for word in self.reachableWords:
@@ -41,47 +41,45 @@ class Node(object):
                 thread = self.__threads.get()
                 thread.start()
                 startedThreadCount = startedThreadCount + 1
-                
+
             while startedThreadCount != len(self.nodes):
                 time.sleep(1)
-        
+
         return(self.nodes)
-    
+
     def makeNode(self,word):
         self.nodes += [Node(word, self)]
-    
+
     def searchNode(self, word):
         for node in self.nodes:
             if node.word == word:
                 return(node)
-        
+
         return(None)
-    
+
     def getCost(self):
         if self.__preNode is None:
             cost = 0
         else:
-            cost = self.__preNode.getCost() + list(self.__preNode.nodes).index(self) + 1
-    
+            cost = self.__preNode.getCost() +\
+                   list(self.__preNode.nodes).index(self) + 1
         return(cost)
-    
+
     def getWordsChane(self, chaneString=""):
-        
         if self.__preNode is None:
             print (self.word + chaneString)
         else:
             nextChaneString = " -> " + self.word + chaneString
             self.__preNode.getWordsChane(nextChaneString)
-    
+
     def getWordsChaneList(self):
-        
         if self.__preNode is None:
             return([self.word])
         else:
             list = self.__preNode.getWordsChaneList()
             list += [self.word]
             return(list)
-    
+
 if __name__=="__main__":
     word = input(">>")
     n = Node(word)
