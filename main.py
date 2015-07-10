@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         if minCostNode.word == goalWord:
             print("ゴール 発見")
-            links = minCostNode.searchNode(goalWord).getWordsChaneList()
+            links = minCostNode.searchNode(goalWord).wordsChaneList
             linksString = links[0]
             for link in links[1:]:
                 linksString += " -> "

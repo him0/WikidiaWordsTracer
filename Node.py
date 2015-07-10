@@ -62,18 +62,12 @@ class Node(object):
                    list(self.__preNode.reachableWords).index(self.word) + 1
         return cost
 
-    def getWordsChane(self, chaneString=""):
-        if self.__preNode is None:
-            print(self.word + chaneString)
-        else:
-            nextChaneString = " -> " + self.word + chaneString
-            self.__preNode.getWordsChane(nextChaneString)
-
-    def getWordsChaneList(self):
+    @property
+    def wordsChaneList(self):
         if self.__preNode is None:
             return ([self.word])
         else:
-            list = self.__preNode.getWordsChaneList()
+            list = self.__preNode.getWordsChaneList
             list += [self.word]
             return list
 
