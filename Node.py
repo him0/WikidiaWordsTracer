@@ -21,34 +21,30 @@ class Node(object):
 
     def getNodes(self, showMessage=False):
         self.nodes = []
+        self.doneThreadCount = 0
         numOfWords = len(self.reachableWords)
 
         if numOfWords != 0 and showMessage:
-            # progressBar = ProgressBar(numOfWords) # 作ってみたものの微妙な感じ
             print(self.word + " から参照されるノードの数 " + str(numOfWords))
 
         for word in self.reachableWords:
             thread = threading.Thread(target=self.makeNode, args=(word,))
+            thread.setDaemon(False)
             self.__threads.put(thread)
 
-        startedThreadCount = 0
-        numOfParallelThread = 50
-
         while not self.__threads.empty():
-            for x in range(0, numOfParallelThread):
-                if self.__threads.empty():
-                    break
-                thread = self.__threads.get()
-                thread.start()
-                startedThreadCount = startedThreadCount + 1
+            thread = self.__threads.get()
+            thread.start()
 
-            while startedThreadCount != len(self.nodes):
-                time.sleep(1)
+        #すべてのスレッドの終了を確認する
+        while self.doneThreadCount != numOfWords:
+            time.sleep(1)
 
         return (self.nodes)
 
     def makeNode(self, word):
         self.nodes += [Node(word, self)]
+        self.doneThreadCount = self.doneThreadCount + 1
 
     def searchNode(self, word):
         for node in self.nodes:
