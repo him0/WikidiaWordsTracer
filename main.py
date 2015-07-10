@@ -36,7 +36,7 @@ if __name__ == "__main__":
         #    print("ノード : " + node.word + " (距離 : " + str(node.totalCost()) + ")")
 
         print("確定 : " + minCostNode.word + " (距離 : " + str(
-            minCostNode.totalCostCost) + ")")
+            minCostNode.totalCost) + ")")
 
         additionalNodes = minCostNode.getNodes(showMessage=True)
         for additionalNode in additionalNodes:
