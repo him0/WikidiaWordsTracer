@@ -48,7 +48,7 @@ class Node(object):
 
     def searchNode(self, word):
         for node in self.nodes:
-            if node.word == word:
+            if word in node.word:
                 return (node)
 
         return None
@@ -67,7 +67,7 @@ class Node(object):
         if self.__preNode is None:
             return ([self.word])
         else:
-            list = self.__preNode.getWordsChaneList
+            list = self.__preNode.wordsChaneList
             list += [self.word]
             return list
 
