@@ -46,11 +46,18 @@ if __name__ == "__main__":
                         nodes.remove(node)
                     else:
                         additionalNodes.remove(additionalNode)
+                        break
         nodes += additionalNodes
 
-        if minCostNode.searchNode(goalWord) is not None:
+        if minCostNode.word == goalWord:
             print("ゴール 発見")
-            print(minCostNode.searchNode(goalWord).getWordsChaneList())
+            links = minCostNode.searchNode(goalWord).getWordsChaneList()
+            linksString = links[0]
+            for link in links[1:]:
+                linksString += " -> "
+                linksString += link
+            print(linksString)
+            print("距離 : " + str(minCostNode.getCost))
             break
 
         minCostNode = None
