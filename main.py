@@ -33,16 +33,16 @@ if __name__ == "__main__":
         pickedupedWords.append(minCostNode.word)
         minCostNode.isPickuped = True
         # for node in nodes:
-        #    print("ノード : " + node.word + " (距離 : " + str(node.getCost()) + ")")
+        #    print("ノード : " + node.word + " (距離 : " + str(node.totalCost()) + ")")
 
         print("確定 : " + minCostNode.word + " (距離 : " + str(
-            minCostNode.getCost) + ")")
+            minCostNode.totalCostCost) + ")")
 
         additionalNodes = minCostNode.getNodes(showMessage=True)
         for additionalNode in additionalNodes:
             for node in nodes:
                 if additionalNode.word == node.word:
-                    if additionalNode.getCost < node.getCost:
+                    if additionalNode.totalCost < node.totalCost:
                         nodes.remove(node)
                     else:
                         additionalNodes.remove(additionalNode)
@@ -57,7 +57,7 @@ if __name__ == "__main__":
                 linksString += " -> "
                 linksString += link
             print(linksString)
-            print("距離 : " + str(minCostNode.getCost))
+            print("距離 : " + str(minCostNode.totalCost))
             break
 
         minCostNode = None
@@ -66,7 +66,7 @@ if __name__ == "__main__":
                 if node.isPickuped is False:
                     minCostNode = node
             else:
-                if (node.getCost < minCostNode.getCost) and (
+                if (node.totalCost < minCostNode.totalCost) and (
                             node.isPickuped is False):
                     minCostNode = node
 

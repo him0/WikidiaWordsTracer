@@ -54,11 +54,11 @@ class Node(object):
         return None
 
     @property
-    def getCost(self):
+    def totalCost(self):
         if self.__preNode is None:
             cost = 0
         else:
-            cost = self.__preNode.getCost + \
+            cost = self.__preNode.totalCost + \
                    list(self.__preNode.reachableWords).index(self.word) + 1
         return cost
 
@@ -83,5 +83,5 @@ if __name__ == "__main__":
     n = Node(word)
     print(n.reachableWords)
     nodes = n.getNodes()
-    print(nodes[0].getCost)
+    print(nodes[0].totalCost)
     print(nodes[0].getWordsChane())
