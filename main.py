@@ -70,4 +70,4 @@ if __name__ == "__main__":
                             node.isPickuped is False):
                     minCostNode = node
 
-    print("探索を諦めました")
+    print("探索を終了します")
