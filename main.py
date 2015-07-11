@@ -10,64 +10,63 @@ if __name__ == "__main__":
     print("  WikipediaWordsTracer  ")
     print("----------------------")
 
-    startWord = input("スタート地点となる ワード >> ")
-    startWord = startWord.replace(" ", "_")
-    goalWord = input("ゴール地点となる ワード >> ")
-    goalWord = goalWord.replace(" ", "_")
+    start_word = input("スタート地点となる ワード >> ")
+    start_word = start_word.replace(" ", "_")
+    goal_word = input("ゴール地点となる ワード >> ")
+    goal_word = goal_word.replace(" ", "_")
 
-    print("スタート地点を" + startWord + "に")
-    print("ゴール地点を" + goalWord + "に設定しました。")
+    print("スタート地点を" + start_word + "に")
+    print("ゴール地点を" + goal_word + "に設定しました。")
     print("探索を開始します。")
 
     nodes = []
-    pickedupedWords = []
-    startNode = Node(startWord)
-    nodes.append(startNode)
+    picked_words = []
+    start_node = Node(start_word)
+    nodes.append(start_node)
 
-    minCostNode = startNode
+    minimal_cost_node = start_node
     for x in range(0, 100):
         print("最短経路確定済み ノード数 : " + str(x))
         print("現在の総ノード数 : " + str(len(nodes)))
 
-        # todo 同じwordについてのノード2回めに作成された際の処理
-        pickedupedWords.append(minCostNode.word)
-        minCostNode.isPickuped = True
-        # for node in nodes:
-        #    print("ノード : " + node.word + " (距離 : " + str(node.totalCost()) + ")")
+        picked_words.append(minimal_cost_node.name)
+        minimal_cost_node.isPicked = True
 
-        print("確定 : " + minCostNode.word + " (距離 : " + str(
-            minCostNode.totalCost) + ")")
+        print("確定 : " + minimal_cost_node.name + " (距離 : " + str(
+            minimal_cost_node.total_cost) + ")")
 
-        additionalNodes = minCostNode.getNodes(showMessage=True)
-        for additionalNode in additionalNodes:
-            for node in nodes:
-                if additionalNode.word == node.word:
-                    if additionalNode.totalCost < node.totalCost:
-                        nodes.remove(node)
-                    else:
-                        additionalNodes.remove(additionalNode)
-                        break
-        nodes += additionalNodes
-
-        if goalWord in minCostNode.word:
+        if goal_word in minimal_cost_node.name:
             print("ゴール 発見")
-            links = minCostNode.wordsChaneList
-            linksString = links[0]
-            for link in links[1:]:
-                linksString += " -> "
-                linksString += link
-            print(linksString)
-            print("距離 : " + str(minCostNode.totalCost))
+            words = minimal_cost_node.words_chane
+            links_string = words[0]
+            for word in words[1:]:
+                links_string += " -> "
+                links_string += word
+            print(links_string)
+            print("距離 : " + str(minimal_cost_node.total_cost))
             break
 
-        minCostNode = None
+        minimal_cost_node.setup_nodes(True)
+        additional_nodes = minimal_cost_node.nodes
+
+        for additional_node in additional_nodes:
+            for node in nodes:
+                if additional_node.name == node.name:
+                    if additional_node.total_cost < node.total_cost:
+                        nodes.remove(node)
+                    else:
+                        additional_nodes.remove(additional_node)
+                        break
+        nodes += additional_nodes
+
+        minimal_cost_node = None
         for node in nodes:
-            if minCostNode is None:
-                if node.isPickuped is False:
-                    minCostNode = node
+            if minimal_cost_node is None:
+                if node.isPicked is False:
+                    minimal_cost_node = node
             else:
-                if (node.totalCost < minCostNode.totalCost) and (
-                            node.isPickuped is False):
-                    minCostNode = node
+                if node.total_cost < minimal_cost_node.total_cost:
+                    if node.isPicked is False:
+                        minimal_cost_node = node
 
     print("探索を終了します")

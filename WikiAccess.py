@@ -10,90 +10,89 @@ import os
 
 
 class WikiAccess:
+    def __init__(self, query=None):
+        WikiAccess.WIKI_API = "https://ja.wikipedia.org/wiki/%(special)s/%(keyword)s"
+        WikiAccess.CACHE_PATH = "./cache"
 
-    def __init__(self, word=None):
-        wikiAPI = "https://ja.wikipedia.org/wiki/%(speclial)s/%(keyword)s"
-        self.cachePath = "./cache"
-        
-        if word is None:
-            self.word = None #なんか処理する
-        else:
-            self.word = word.replace(" ", "_")
+        self.word = query.replace(" ", "_")
 
-        speclial = urllib.parse.quote_plus("特別:データ書き出し")
-        self.keyword = urllib.parse.quote_plus(self.word)
-        
-        self.url = wikiAPI % {
-            "speclial" : speclial,
-            "keyword" : self.keyword
+        special = urllib.parse.quote_plus("特別:データ書き出し")
+        self.word_key = urllib.parse.quote_plus(self.word)
+
+        self.url = WikiAccess.WIKI_API % {
+            "special": special,
+            "keyword": self.word_key
         }
 
-    def getReachableWords(self):
-        words = []
-        fileName = self.keyword[0:50] #長すぎる文字列対策
-        if fileName in os.listdir(self.cachePath):
-            with open(self.cachePath + "/" + fileName, "r") as content:
-                wordsJson = content.read()
+        self.reachable_words = []
+        self.__setup_reachable_words()
 
-            words = json.loads(wordsJson)
+    def __setup_reachable_words(self):
+
+        file_name = self.word_key[0:50]  # 長すぎる文字列対策
+        if file_name in os.listdir(WikiAccess.CACHE_PATH):
+            with open(WikiAccess.CACHE_PATH + "/" + file_name, "r") as content:
+                words_json = content.read()
+
+            self.reachable_words = json.loads(words_json)
         else:
             try:
                 with urllib.request.urlopen(self.url) as response:
-                    xmlStrings = response.read().decode("utf-8")
+                    xml_strings = response.read().decode("utf-8")
             except urllib.error.HTTPError:
                 print(self.word)
 
-            self.soup = bs4.BeautifulSoup(xmlStrings)
-            self.contents = self.soup.findAll("text")
+            soup = bs4.BeautifulSoup(xml_strings)
+            contents = soup.findAll("text")
 
             pattern = re.compile("(?<=\[\[)([^\[\]:]+)(?=\]\])")
 
-            for content in self.contents :
-                matchs = pattern.findall(str(content))
-                for match in matchs:
-                    word = self.__wordFix(match)
-                    if "|" in word:
-                        words.extend(word.split("|")) #wikiのエイリアス表記に対応
+            for content in contents:
+                matches = pattern.findall(str(content))
+
+                # wikiのエイリアス表記に対応
+                for match in matches:
+                    link_word = self.__word_fix(match)
+                    if "|" in link_word:
+                        self.reachable_words.extend(link_word.split("|"))
                     else:
-                        words.append(word)
-            #words = list(set(words)) #重複消去 # Bug 順番が入れ替わる
-            uniqueWords = []
-            for x in words:
-                if x not in uniqueWords:
-                    uniqueWords.append(x)
-            words = uniqueWords
+                        self.reachable_words.append(link_word)
 
-            with open(self.cachePath + "/" + fileName, "w") as content:
-                content.write(json.dumps(words))
+            unique_words = []
+            for word in self.reachable_words:
+                if word not in unique_words:
+                    unique_words.append(word)
+            self.reachable_words = unique_words
 
-        return words
+            with open(WikiAccess.CACHE_PATH + "/" + file_name, "w") as content:
+                content.write(json.dumps(self.reachable_words))
 
-    def __wordFix(self, word):
+    def __word_fix(self, complex_word):
         # 表記が文字列参照の文字列参照なので2回やらないとダメ
-        word = xml.sax.saxutils.unescape(word)
-        word = xml.sax.saxutils.unescape(word)
+        complex_word = xml.sax.saxutils.unescape(complex_word)
+        complex_word = xml.sax.saxutils.unescape(complex_word)
 
-        word = word.replace("km&sup2", "平方キロメートル")
-        word = word.replace("m&sup2", "平方メートル")
-        word = word.replace("mi&sup2", "平方マイル")
-        word = word.replace("}}", "") # 謎 }}lang 対策
-        word = word.replace("{{", "") # 謎 {{IPA 対策
+        complex_word = complex_word.replace("km&sup2", "平方キロメートル")
+        complex_word = complex_word.replace("m&sup2", "平方メートル")
+        complex_word = complex_word.replace("mi&sup2", "平方マイル")
+        complex_word = complex_word.replace("}}", "")  # 謎 }}lang 対策
+        complex_word = complex_word.replace("{{", "")  # 謎 {{IPA 対策
         # 謎 ナノアーケウム<br_/>・エクインタンス 対策
         # 謎 '''アーケ<br_/>プラスチダ''' 対策
-        word = word.replace("'''", "")
-        word = word.replace("<br_/>", "")
-        word = word.replace("<br_/>", "") # 1回でやりきれないとき？用
+        complex_word = complex_word.replace("'''", "")
+        complex_word = complex_word.replace("<br_/>", "")
+        complex_word = complex_word.replace("<br_/>", "")  # 1回でやりきれないとき？用
         # 謎 ビタミンB<sub>6</sub> 対策
-        word = word.replace("<sub>6</sub>", "6")
-        word = word.replace("<nowiki>C#</nowiki>", "C#")
-        word = word.replace(" ", "_")
+        complex_word = complex_word.replace("<sub>6</sub>", "6")
+        complex_word = complex_word.replace("<nowiki>C#</nowiki>", "C#")
+        simple_word = complex_word.replace(" ", "_")
 
-        return word
-    
+        return simple_word
 
-if __name__=="__main__":
-    input = input(">>")
-    access = WikiAccess(input)
+
+if __name__ == "__main__":
+    word = input(">>")
+    access = WikiAccess(word)
     print(access.url)
     words = access.getReachableWords()
     print(words)
