@@ -89,10 +89,11 @@ class WikiAccess:
 
         return simple_word
 
-
+"""
 if __name__ == "__main__":
     word = input(">>")
     access = WikiAccess(word)
     print(access.url)
     words = access.getReachableWords()
     print(words)
+"""

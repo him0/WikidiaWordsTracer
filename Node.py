@@ -61,7 +61,7 @@ class Node(object):
             word_chane += [self.name]
             return word_chane
 
-
+"""
 if __name__ == "__main__":
     word = word(">>")
     n = Node(word)
@@ -70,3 +70,4 @@ if __name__ == "__main__":
     nodes = n.nodes
     print(nodes[0].total_cost)
     print(nodes[0].WordsChane)
+"""
