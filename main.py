@@ -6,9 +6,9 @@ from Node import *
 
 if __name__ == "__main__":
 
-    print("----------------------")
+    print("------------------------")
     print("  WikipediaWordsTracer  ")
-    print("----------------------")
+    print("------------------------")
 
     start_word = input("スタート地点となる ワード >> ")
     start_word = start_word.replace(" ", "_")
