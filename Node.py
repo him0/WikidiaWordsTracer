@@ -3,7 +3,6 @@
 
 from WikiAccess import *
 import threading
-import queue
 import time
 
 
@@ -14,7 +13,6 @@ class Node(object):
         self.isPicked = False
 
         self.nodes = []
-        self.__threads = queue.Queue()
         self.__done_thread_count = 0
 
         wikipedia_access = WikiAccess(node_name)
@@ -29,10 +27,6 @@ class Node(object):
         for name in self.reachable_node_names:
             thread = threading.Thread(target=self.makeNode, args=(name,))
             thread.setDaemon(False)
-            self.__threads.put(thread)
-
-        while not self.__threads.empty():
-            thread = self.__threads.get()
             thread.start()
 
         # すべてのスレッドの終了を確認する
