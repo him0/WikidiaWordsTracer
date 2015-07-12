@@ -30,20 +30,15 @@ class WikiAccess(object):
     def __setup_reachable_words(self):
         file_name = self.word_key[0:50]  # 長すぎる文字列対策
         if file_name in os.listdir(WikiAccess.CACHE_PATH):
-            self.reachable_words = self.__get_words_via_json(file_name)
+            with open(WikiAccess.CACHE_PATH + "/" + file_name, "r") as content:
+                self.reachable_words = content.read()
         else:
-            self.reachable_words = self.__get_words_via_http(file_name)
+            self.reachable_words = self.__get_words_via_http()
 
             with open(WikiAccess.CACHE_PATH + "/" + file_name, "w") as content:
                 content.write(json.dumps(self.reachable_words))
 
-    def __get_words_via_json(self, file_name):
-        with open(WikiAccess.CACHE_PATH + "/" + file_name, "r") as content:
-            words_json = content.read()
-
-        return json.loads(words_json)
-
-    def __get_words_via_http(self, file_name):
+    def __get_words_via_http(self):
         try:
             with urllib.request.urlopen(self.url) as response:
                 xml_strings = response.read().decode("utf-8")
