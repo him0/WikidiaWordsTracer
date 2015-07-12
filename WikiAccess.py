@@ -28,44 +28,50 @@ class WikiAccess(object):
         self.__setup_reachable_words()
 
     def __setup_reachable_words(self):
-
         file_name = self.word_key[0:50]  # 長すぎる文字列対策
         if file_name in os.listdir(WikiAccess.CACHE_PATH):
-            with open(WikiAccess.CACHE_PATH + "/" + file_name, "r") as content:
-                words_json = content.read()
-
-            self.reachable_words = json.loads(words_json)
+            self.reachable_words = self.__get_words_via_json(file_name)
         else:
-            try:
-                with urllib.request.urlopen(self.url) as response:
-                    xml_strings = response.read().decode("utf-8")
-            except urllib.error.HTTPError:
-                print(self.word)
-
-            soup = bs4.BeautifulSoup(xml_strings)
-            contents = soup.findAll("text")
-
-            pattern = re.compile("(?<=\[\[)([^\[\]:]+)(?=\]\])")
-
-            for content in contents:
-                matches = pattern.findall(str(content))
-
-                # wikiのエイリアス表記に対応
-                for match in matches:
-                    link_word = self.__word_fix(match)
-                    if "|" in link_word:
-                        self.reachable_words.extend(link_word.split("|"))
-                    else:
-                        self.reachable_words.append(link_word)
-
-            unique_words = []
-            for word in self.reachable_words:
-                if word not in unique_words:
-                    unique_words.append(word)
-            self.reachable_words = unique_words
+            self.reachable_words = self.__get_words_via_http(file_name)
 
             with open(WikiAccess.CACHE_PATH + "/" + file_name, "w") as content:
                 content.write(json.dumps(self.reachable_words))
+
+    def __get_words_via_json(self, file_name):
+        with open(WikiAccess.CACHE_PATH + "/" + file_name, "r") as content:
+            words_json = content.read()
+
+        return json.loads(words_json)
+
+    def __get_words_via_http(self, file_name):
+        try:
+            with urllib.request.urlopen(self.url) as response:
+                xml_strings = response.read().decode("utf-8")
+        except urllib.error.HTTPError:
+            print(self.word)
+
+        soup = bs4.BeautifulSoup(xml_strings)
+        contents = soup.findAll("text")
+
+        pattern = re.compile("(?<=\[\[)([^\[\]:]+)(?=\]\])")
+
+        for content in contents:
+            matches = pattern.findall(str(content))
+
+            # wikiのエイリアス表記に対応
+            for match in matches:
+                link_word = self.__word_fix(match)
+                if "|" in link_word:
+                    self.reachable_words.extend(link_word.split("|"))
+                else:
+                    self.reachable_words.append(link_word)
+
+        unique_words = []
+        for word in self.reachable_words:
+            if word not in unique_words:
+                unique_words.append(word)
+
+        return unique_words
 
     def __word_fix(self, complex_word):
         # 表記が文字列参照の文字列参照なので2回やらないとダメ
@@ -94,6 +100,6 @@ if __name__ == "__main__":
     word = input(">>")
     access = WikiAccess(word)
     print(access.url)
-    words = access.getReachableWords()
+    words = access.reachable_words
     print(words)
 """
