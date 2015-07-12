@@ -2,80 +2,67 @@
 # -*- coding: utf-8 -*-
 
 from WikiAccess import *
-from ProgressBar import *
 import threading
-import queue
 import time
 
 
 class Node(object):
-    def __init__(self, word, preNode=None):
-        self.word = word
-        self.__preNode = preNode
 
-        wikiAccess = WikiAccess(word)
-        self.reachableWords = wikiAccess.getReachableWords()
-        self.isPickuped = False
+    def __init__(self, node_name, pre_node=None):
+        self.name = node_name
+        self.__pre_node = pre_node
+        self.isPicked = False
 
-        self.__threads = queue.Queue()
-
-    def getNodes(self, showMessage=False):
         self.nodes = []
-        self.doneThreadCount = 0
-        numOfWords = len(self.reachableWords)
+        self.__done_thread_count = 0
 
-        if numOfWords != 0 and showMessage:
-            print(self.word + " から参照されるノードの数 " + str(numOfWords))
+        wikipedia_access = WikiAccess(node_name)
+        self.reachable_node_names = wikipedia_access.reachable_words
 
-        for word in self.reachableWords:
-            thread = threading.Thread(target=self.makeNode, args=(word,))
+    def setup_nodes(self, show_message=False):
+        num_of_words = len(self.reachable_node_names)
+
+        if 0 != num_of_words and show_message:
+            print(self.name + " から参照されるノードの数 " + str(num_of_words))
+
+        for name in self.reachable_node_names:
+            thread = threading.Thread(target=self.makeNode, args=(name,))
             thread.setDaemon(False)
-            self.__threads.put(thread)
-
-        while not self.__threads.empty():
-            thread = self.__threads.get()
             thread.start()
 
-        #すべてのスレッドの終了を確認する
-        while self.doneThreadCount != numOfWords:
+        # すべてのスレッドの終了を確認する
+        while num_of_words != self.__done_thread_count:
             time.sleep(1)
 
-        return (self.nodes)
-
-    def makeNode(self, word):
-        self.nodes += [Node(word, self)]
-        self.doneThreadCount = self.doneThreadCount + 1
-
-    def searchNode(self, word):
-        for node in self.nodes:
-            if word in node.word:
-                return (node)
-
-        return None
+    def makeNode(self, node_name):  # Thread関係なので命名規則が違う
+        self.nodes += [Node(node_name, self)]
+        self.__done_thread_count += 1
 
     @property
-    def totalCost(self):
-        if self.__preNode is None:
+    def total_cost(self):
+        if self.__pre_node is None:
             cost = 0
         else:
-            cost = self.__preNode.totalCost + \
-                   list(self.__preNode.reachableWords).index(self.word) + 1
+            cost = self.__pre_node.total_cost + \
+                list(self.__pre_node.reachable_node_names).index(self.name) + 1
         return cost
 
     @property
-    def wordsChaneList(self):
-        if self.__preNode is None:
-            return ([self.word])
+    def words_chane(self):
+        if self.__pre_node is None:
+            return [self.name]
         else:
-            list = self.__preNode.wordsChaneList
-            list += [self.word]
-            return list
+            word_chane = self.__pre_node.words_chane
+            word_chane += [self.name]
+            return word_chane
 
-
+"""
 if __name__ == "__main__":
-    word = input(">>")
+    word = word(">>")
     n = Node(word)
-    print(n.reachableWords)
-    nodes = n.getNodes()
-    print(nodes[0].totalCost)
-    print(nodes[0].getWordsChane())
+    n.setup_nodes(True)
+    print(n.reachable_node_names)
+    nodes = n.nodes
+    print(nodes[0].total_cost)
+    print(nodes[0].WordsChane)
+"""
