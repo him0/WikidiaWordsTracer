@@ -12,51 +12,54 @@ class WikipediaWordTracer(object):
         self.nodes = []
         self.picked_words = []
 
-        start_node = Node(self.start_word)
-        self.nodes.append(start_node)
+        self.start_node = Node(self.start_word)
 
-        self.minimal_cost_node = start_node
+    def trace_on(self, try_times=100, show_message=False):
+        additional_nodes = [self.start_node]
+        for x in range(0, try_times):
+            self.__update_nodes(additional_nodes)
+            self.__update_minimal_cost_node()
 
-    def trace_on(self):
-        for x in range(0, 100):
-            print("最短経路確定済み ノード数 : " + str(x))
-            print("現在の総ノード数 : " + str(len(self.nodes)))
-
-            self.picked_words.append(self.minimal_cost_node.name)
-            self.minimal_cost_node.isPicked = True
-
-            print("確定 : " + self.minimal_cost_node.name + " (距離 : " + str(
-                self.minimal_cost_node.total_cost) + ")")
+            if show_message:
+                print("最短経路確定済み ノード数 : " + str(len(self.picked_words)))
+                print("現在の総ノード数 : " + str(len(self.nodes)))
+                print("確定 : " + self.minimal_cost_node.name + " (距離 : " + str(
+                    self.minimal_cost_node.total_cost) + ")")
 
             if self.goal_word in self.minimal_cost_node.name:
                 return self.minimal_cost_node.words_chane
 
-            self.minimal_cost_node.setup_nodes(True)
+            self.minimal_cost_node.setup_nodes(show_message)
             additional_nodes = self.minimal_cost_node.nodes
 
-            for additional_node in additional_nodes:
-                for node in self.nodes:
-                    if additional_node.name == node.name:
-                        if additional_node.total_cost < node.total_cost:
-                            self.nodes.remove(node)
-                        else:
-                            additional_nodes.remove(additional_node)
-                            break
-            self.nodes += additional_nodes
-
-            self.minimal_cost_node = None
-            for node in self.nodes:
-                if self.minimal_cost_node is None:
-                    if node.isPicked is False:
-                        self.minimal_cost_node = node
-                else:
-                    if node.total_cost < self.minimal_cost_node.total_cost:
-                        if node.isPicked is False:
-                            self.minimal_cost_node = node
         return None
 
-if __name__ == "__main__":
+    def __update_nodes(self, additional_nodes):
+        for additional_node in additional_nodes:
+            for node in self.nodes:
+                if additional_node.name == node.name:
+                    if additional_node.total_cost < node.total_cost:
+                        self.nodes.remove(node)
+                    else:
+                        additional_nodes.remove(additional_node)
+                        break
+        self.nodes += additional_nodes
 
+    def __update_minimal_cost_node(self):
+        self.minimal_cost_node = None
+        for node in self.nodes:
+            if self.minimal_cost_node is None:
+                if node.isPicked is False:
+                    self.minimal_cost_node = node
+            else:
+                if node.total_cost < self.minimal_cost_node.total_cost:
+                    if node.isPicked is False:
+                        self.minimal_cost_node = node
+        self.picked_words.append(self.minimal_cost_node.name)
+        self.minimal_cost_node.isPicked = True
+
+"""
+if __name__ == "__main__":
     print("------------------------")
     print("  WikipediaWordsTracer  ")
     print("------------------------")
@@ -72,7 +75,7 @@ if __name__ == "__main__":
 
     wwt = WikipediaWordTracer(start, goal)
 
-    result = wwt.trace_on()
+    result = wwt.trace_on(show_message=True)
     if result is None:
         print("探索を諦めました")
     else:
@@ -85,3 +88,4 @@ if __name__ == "__main__":
         print("距離 : " + str(wwt.minimal_cost_node.total_cost))
 
     print("探索を終了します")
+"""
