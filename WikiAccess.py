@@ -32,7 +32,8 @@ class WikiAccess(object):
         file_name = self.word_key[0:50]  # 長すぎる文字列対策
         if file_name in os.listdir(WikiAccess.CACHE_PATH):
             with open(WikiAccess.CACHE_PATH + "/" + file_name, "r") as content:
-                self.reachable_words = content.read()
+                words_json = content.read()
+                self.reachable_words = json.loads(words_json)
         else:
             self.reachable_words = self.__get_words_via_http()
 
