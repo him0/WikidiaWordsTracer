@@ -10,6 +10,7 @@ import os
 
 
 class WikiAccess(object):
+
     def __init__(self, query=None):
         WikiAccess.WIKI_API = "https://ja.wikipedia.org/wiki/%(special)s/%(keyword)s"
         WikiAccess.CACHE_PATH = "./cache"

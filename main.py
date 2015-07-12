@@ -5,13 +5,12 @@ from Node import *
 
 
 class WikipediaWordTracer(object):
-
+    
     def __init__(self, start_word, goal_word):
         self.start_word = start_word
         self.goal_word = goal_word
         self.nodes = []
         self.picked_words = []
-
         self.start_node = Node(self.start_word)
 
     def trace_on(self, try_times=100, show_message=False):
@@ -52,11 +51,12 @@ class WikipediaWordTracer(object):
                 if node.isPicked is False:
                     self.minimal_cost_node = node
             else:
-                if node.total_cost < self.minimal_cost_node.total_cost:
-                    if node.isPicked is False:
-                        self.minimal_cost_node = node
+                if (node.total_cost < self.minimal_cost_node.total_cost and
+                    node.isPicked is False):
+                    self.minimal_cost_node = node
         self.picked_words.append(self.minimal_cost_node.name)
         self.minimal_cost_node.isPicked = True
+
 
 """
 if __name__ == "__main__":

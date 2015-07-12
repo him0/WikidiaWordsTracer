@@ -7,6 +7,7 @@ import time
 
 
 class Node(object):
+
     def __init__(self, node_name, pre_node=None):
         self.name = node_name
         self.__pre_node = pre_node
