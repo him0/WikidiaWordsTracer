@@ -20,10 +20,10 @@ class WikipediaWordTracer(object):
             self.__update_minimal_cost_node()
 
             if show_message:
-                print("最短経路確定済み ノード数 : " + str(len(self.picked_words)))
-                print("現在の総ノード数 : " + str(len(self.nodes)))
                 print("確定 : " + self.minimal_cost_node.name + " (距離 : " + str(
                     self.minimal_cost_node.total_cost) + ")")
+                print("最短経路確定済み ノード数 : " + str(len(self.picked_words)))
+                print("現在の総ノード数 : " + str(len(self.nodes)))
 
             if self.goal_word in self.minimal_cost_node.name:
                 return self.minimal_cost_node.words_chane
@@ -58,7 +58,7 @@ class WikipediaWordTracer(object):
         self.minimal_cost_node.isPicked = True
 
 
-"""
+
 if __name__ == "__main__":
     print("------------------------")
     print("  WikipediaWordsTracer  ")
@@ -88,4 +88,4 @@ if __name__ == "__main__":
         print("距離 : " + str(wwt.minimal_cost_node.total_cost))
 
     print("探索を終了します")
-"""
+
