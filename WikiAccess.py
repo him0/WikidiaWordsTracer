@@ -9,7 +9,7 @@ import xml.sax.saxutils
 import os
 
 
-class WikiAccess:
+class WikiAccess(object):
     def __init__(self, query=None):
         WikiAccess.WIKI_API = "https://ja.wikipedia.org/wiki/%(special)s/%(keyword)s"
         WikiAccess.CACHE_PATH = "./cache"
